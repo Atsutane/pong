@@ -160,11 +160,11 @@ void ball_movement(struct game_data *gd) {
             gd->ball->mv_down = FALSE;
 
             if ((gd->ball->y > gd->p1->y-2) &&
-                    (gd->ball-y < gd->p1->y)) {
+                    (gd->ball->y < gd->p1->y)) {
                 gd->ball->mv_up = TRUE;
             }
             if ((gd->ball->y > gd->p1->y) &&
-                    (gd->ball-y < gd->p1->y+2)) {
+                    (gd->ball->y < gd->p1->y+2)) {
                 gd->ball->mv_down = TRUE;
             }
         }
@@ -180,11 +180,11 @@ void ball_movement(struct game_data *gd) {
             gd->ball->mv_down = FALSE;
 
             if ((gd->ball->y > gd->p2->y-2) &&
-                    (gd->ball-y < gd->p2->y)) {
+                    (gd->ball->y < gd->p2->y)) {
                 gd->ball->mv_up = TRUE;
             }
             if ((gd->ball->y > gd->p2->y) &&
-                    (gd->ball-y < gd->p2->y+2)) {
+                    (gd->ball->y < gd->p2->y+2)) {
                 gd->ball->mv_down = TRUE;
             }
         }
