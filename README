@@ -1,6 +1,6 @@
 pong
 
 This is just a simple implementation of pong written in C,
-the whole thin is just thought to become comfortable with
+the whole thing is just thought to become comfortable with
 the basics of ncurses and the code is currently completely
 located in one single file.
