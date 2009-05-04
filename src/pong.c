@@ -141,6 +141,7 @@ struct game_data *init_game_data(void) {
     return gd;
 }
 
+
 /* Controls the movement of the ball */
 void ball_movement(struct game_data *gd) {
     if (gd == NULL) {
@@ -244,6 +245,46 @@ void ball_movement(struct game_data *gd) {
     }
     mvaddch(gd->ball->y, gd->ball->x, '0');
 }
+
+
+/* Controls the pad of p2 */
+void p2_ai(struct game_data *gd) {
+    if (gd == NULL) {
+        return;
+    }
+
+    /* Clear current position of the pad */
+    mvaddch(gd->p2->y-2, gd->p2->x, ' ');
+    mvaddch(gd->p2->y-1, gd->p2->x, ' ');
+    mvaddch(gd->p2->y, gd->p2->x, ' ');
+    mvaddch(gd->p2->y+1, gd->p2->x, ' ');
+    mvaddch(gd->p2->y+2, gd->p2->x, ' ');
+
+    /* Correct the position if the size of the terminal was changed */
+    gd->p2->x = gd->max_field_x;
+    while(gd->p2->y+2 > gd->max_field_y-1) {
+        gd->p2->y--;
+    }
+
+    /* If that's too hard, add a if ((rand()%3)==1) or so at this point */
+    if ((gd->ball->y > gd->p2->y+2) &&
+           (gd->p2->y+2 < gd->max_field_y-1)) {
+        gd->p2->y++;
+    }
+    else if ((gd->ball->y < gd->p2->y-2) &&
+            (gd->p2->y-2 > 0)) {
+        gd->p2->y--;
+    }
+
+    /* Draw pad */
+    mvaddch(gd->p2->y-2, gd->p2->x, '|');
+    mvaddch(gd->p2->y-1, gd->p2->x, '|');
+    mvaddch(gd->p2->y, gd->p2->x, '|');
+    mvaddch(gd->p2->y+1, gd->p2->x, '|');
+    mvaddch(gd->p2->y+2, gd->p2->x, '|');
+}
+
+
 
 void quit(void) {
     endwin();
