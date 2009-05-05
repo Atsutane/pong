@@ -1,3 +1,2 @@
 all:
-	mkdir dbg
-	$(CC) src/pong.c -o dbg/pong -Wall -lncurses
+	$(CC) src/pong.c -o pong -Wall -lncurses
