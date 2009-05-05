@@ -57,6 +57,30 @@ struct game_data {
 };
 
 
+/* Clears the last line of the terminal */
+inline void clear_statusbar(unsigned int y,
+        unsigned int x) {
+    unsigned int i;
+
+    for (i = 0; i <= x; i++) {
+        mvaddch(y, i, ' ');
+    }
+}
+
+
+/* Draws the statusbar */
+void draw_statusbar(struct game_data *gd) {
+    clear_statusbar(gd->max_field_y,
+            gd->max_field_x);
+
+    mvprintw(gd->max_field_y, 0,
+            "%02d", gd->p1->score);
+    mvprintw(gd->max_field_y,
+            gd->max_field_x,
+            "%02d", gd->p2->score);
+}
+
+
 /* Called in the main loop to verify the size
  * of the current game field and if it changed
  * to update the size.
@@ -76,11 +100,18 @@ bool check_field_size(struct game_data *gd) {
     /* If size changed, update the data and return FALSE so
      * it's easy to check if the data changed.
      */
-    if ((gd->max_field_y != y) || (gd->max_field_x != x)) {
+    if ((gd->max_field_y != y) ||
+            (gd->max_field_x != x)) {
+        
+        clear_statusbar(gd->max_field_y,
+                gd->max_field_x);
+        
         gd->max_field_x = x;
         gd->max_field_y = y;
+        
         return FALSE;
     }
+
     return TRUE;
 }
 
