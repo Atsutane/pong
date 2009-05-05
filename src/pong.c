@@ -361,7 +361,13 @@ int game(void) {
     int p, r;
     struct game_data *gd; /* contains all our data */
 
-    gd = init_game_data();
+    if ((gd = init_game_data()) == NULL) {
+        mvprintw(0, 0, "Could not allocate memory for the game_data.");
+        timeout(-1);
+        getch();
+        return -1;
+    }
+
     p=0;
     clocks = clock();
     interval = CLOCKS_PER_SEC/4;
@@ -371,6 +377,8 @@ int game(void) {
 
     ball_movement(gd);
     p2_ai(gd);
+
+    refresh();
 
     while ((gd->p1->score != 21) &&
             (gd->p2->score != 21)) {
@@ -399,6 +407,7 @@ int game(void) {
             draw_statusbar(gd);
 
             p++;
+            clocks = clock();
             refresh();
         }
     }
@@ -433,8 +442,14 @@ int main(void) {
     nonl(); /* Receive \r instead of \n */
     curs_set(0); /* Set Cursor invisible */
     cbreak(); /* No line buffering */
-    timeout(250); /* set input timeout to 250 milliseconds */
+    timeout(-1); /* set delay blocking */
     keypad(stdscr, TRUE); /* Activate keypad */
+
+    mvprintw(0, 0, "Press a key to start.");
+    refresh();
+    getch();
+    clear();
+    timeout(0); /* set delay non blocking */
 
     winner = game();
     clear();
