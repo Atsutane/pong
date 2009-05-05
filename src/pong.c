@@ -382,7 +382,7 @@ int game(void) {
 
     while ((gd->p1->score != 21) &&
             (gd->p2->score != 21)) {
-        if (clocks > clocks + interval) {
+        if (clock() > clocks + interval) {
             if (p == 3) {
 
                 /* Input Handling for P1 goes here.
