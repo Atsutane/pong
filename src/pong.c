@@ -76,7 +76,7 @@ void draw_statusbar(struct game_data *gd) {
     mvprintw(gd->max_field_y, 0,
             "%02d", gd->p1->score);
     mvprintw(gd->max_field_y,
-            gd->max_field_x,
+            gd->max_field_x-1,
             "%02d", gd->p2->score);
 }
 
