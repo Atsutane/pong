@@ -424,6 +424,23 @@ void quit(void) {
 
 int main(void) {
 
+    int winner, y, x;
+
+    initscr(); /* start the WINDOW */
+    atexit(quit);
+    clear(); /* Clear Terminal */
+    noecho(); /* Don't echo input */
+    nonl(); /* Receive \r instead of \n */
+    curs_set(0); /* Set Cursor invisible */
+    cbreak(); /* No line buffering */
+    timeout(250); /* set input timeout to 250 milliseconds */
+    keypad(stdscr, TRUE); /* Activate keypad */
+
+    winner = game();
+    clear();
+    getmaxyx(stdscr, y, x);
+    mvprintw(y/2, x/3, "Player %d wins.", winner);
+    getch();
 
     return EXIT_SUCCESS;
 }
