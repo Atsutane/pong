@@ -278,6 +278,42 @@ void ball_movement(struct game_data *gd) {
 }
 
 
+/* Handles the launch when a player scored */
+void ball_launch(struct game_data *gd) {
+    int c;
+    struct player_data *p;
+
+    if (gd == NULL) {
+        return;
+    }
+
+    p = (gd->ball->x == 1) ? gd->p1 : gd->p2;
+
+    p->y = gd->ball->y;
+
+    /* Check if it's the turn of the player,
+     * if so, let him move his pad. 
+     */
+    if (p->x == 0) {
+        while ((c = getch()) != ' ') {
+            if ((c == KEY_UP) &&
+                  (p->y > gd->ball->y-2) &&
+                  (p->y < gd->ball->y+2)) {
+                p->y--;
+            }
+            else if ((c == KEY_DOWN) &&
+                  (p->y > gd->ball->y-2) &&
+                  (p->y < gd->ball->y+2)) {
+                p->y++;
+            }
+        }
+    }
+    else {
+        p->y += rand()%3 - 1;
+    }
+}
+
+
 /* Controls the pad of p2 */
 void p2_ai(struct game_data *gd) {
     if (gd == NULL) {
