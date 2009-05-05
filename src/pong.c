@@ -1,6 +1,6 @@
 /* Copyright (c) 2009, Thorsten Toepper
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -92,8 +92,8 @@ bool check_field_size(struct game_data *gd) {
     }
 
     /* Get current size of the terminal */
-    getmaxyx(stdscr, y, x); 
-    
+    getmaxyx(stdscr, y, x);
+
     x--;
     y--;
 
@@ -102,13 +102,13 @@ bool check_field_size(struct game_data *gd) {
      */
     if ((gd->max_field_y != y) ||
             (gd->max_field_x != x)) {
-        
+
         clear_statusbar(gd->max_field_y,
                 gd->max_field_x);
-        
+
         gd->max_field_x = x;
         gd->max_field_y = y;
-        
+
         return FALSE;
     }
 
@@ -127,7 +127,7 @@ struct game_data *init_game_data(void) {
     if (gd == NULL) {
         return NULL;
     }
-  
+
     gd->p1 = malloc(sizeof(struct player_data));
     if (gd->p1 == NULL) {
         free(gd);
@@ -178,10 +178,10 @@ void ball_movement(struct game_data *gd) {
     if (gd == NULL) {
         return;
     }
-    
+
     /* Clear current position of the ball */
     mvaddch(gd->ball->y, gd->ball->x, ' ');
-    
+
     if (gd->ball->x == 1) {
         /* Does it hit p1s pad? */
         if ((gd->ball->y > gd->p1->y-2) &&
@@ -260,7 +260,7 @@ void ball_movement(struct game_data *gd) {
         gd->ball->mv_up = FALSE;
         gd->ball->mv_down = FALSE;
     }
- 
+
     /* Movement of the ball */
     if (gd->ball->mv_left == TRUE) {
         gd->ball->x--;
@@ -292,7 +292,7 @@ void ball_launch(struct game_data *gd) {
     p->y = gd->ball->y;
 
     /* Check if it's the turn of the player,
-     * if so, let him move his pad. 
+     * if so, let him move his pad.
      */
     if (p->x == 0) {
         while ((c = getch()) != ' ') {
@@ -352,16 +352,78 @@ void p2_ai(struct game_data *gd) {
 }
 
 
+/* Handles the game, so that the game is seperated from
+ * the ncurses handling in the main function.
+ */
+int game(void) {
+    clock_t clocks, /* contains clock since the start of the program */
+            interval;
+    int p, r;
+    struct game_data *gd; /* contains all our data */
 
+    gd = init_game_data();
+    p=0;
+    clocks = clock();
+    interval = CLOCKS_PER_SEC/4;
+
+    while (getch() != ' ');
+    gd->ball->mv_right = TRUE;
+
+    ball_movement(gd);
+    p2_ai(gd);
+
+    while ((gd->p1->score != 21) &&
+            (gd->p2->score != 21)) {
+        if (clocks > clocks + interval) {
+            if (p == 3) {
+
+                /* Input Handling for P1 goes here.
+                 * I don't have the knowledge for
+                 * a well working one yet, but it
+                 * should be relatively easy.
+                 * man 3 ncurses
+                 * man 3 curs_getch
+                 * man 3 curs_inopts
+                */
+
+                p2_ai(gd);
+                p=0;
+            }
+
+            ball_movement(gd);
+            if ((gd->ball->mv_left == FALSE) &&
+                    (gd->ball->mv_right == FALSE)) {
+                    ball_launch(gd);
+            }
+            check_field_size(gd);
+            draw_statusbar(gd);
+
+            p++;
+            refresh();
+        }
+    }
+
+    r = (gd->p1->score == 21) ? 1 : 2;
+    clear_statusbar(gd->max_field_y,
+            gd->max_field_x);
+
+    free(gd->p1);
+    free(gd->p2);
+    free(gd->ball);
+    free(gd);
+
+    return r;
+}
+
+
+/* Kills the ncurses Window */
 void quit(void) {
     endwin();
 }
 
 
 int main(void) {
-    struct game_data *game; /* contains all our data */
-    
-    game = init_game_data();
+
 
     return EXIT_SUCCESS;
 }
