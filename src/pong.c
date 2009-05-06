@@ -484,6 +484,7 @@ int main(void) {
     clear();
     getmaxyx(stdscr, y, x);
     mvprintw(y/2, x/3, "Player %d wins.", winner);
+    timeout(-1);
     getch();
 
     return EXIT_SUCCESS;
