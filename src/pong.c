@@ -372,9 +372,8 @@ int game(void) {
 
     p=0;
     clocks = clock();
-    interval = CLOCKS_PER_SEC/4;
-
-    while (getch() != ' ');
+    interval = CLOCKS_PER_SEC/12;
+    
     gd->ball->mv_right = TRUE;
 
     ball_movement(gd);
@@ -385,7 +384,7 @@ int game(void) {
     while ((gd->p1->score != 21) &&
             (gd->p2->score != 21)) {
         if (clock() > clocks + interval) {
-            if (p == 3) {
+            if (p == 4) {
 
                 /* Input Handling for P1 goes here.
                  * I don't have the knowledge for
