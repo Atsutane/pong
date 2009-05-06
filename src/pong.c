@@ -358,7 +358,9 @@ void p2_ai(struct game_data *gd) {
 int game(void) {
     clock_t clocks, /* contains clock since the start of the program */
             interval;
-    int p, r;
+    int p, /* Time for player input y/n? */
+        player_input,
+        r; /* return value */
     struct game_data *gd; /* contains all our data */
 
     if ((gd = init_game_data()) == NULL) {
@@ -393,6 +395,34 @@ int game(void) {
                  * man 3 curs_getch
                  * man 3 curs_inopts
                 */
+                mvaddch(gd->p1->y-2, 0, ' ');
+                mvaddch(gd->p1->y-1, 0, ' ');
+                mvaddch(gd->p1->y, 0, ' ');
+                mvaddch(gd->p1->y+1, 0, ' ');
+                mvaddch(gd->p1->y+2, 0, ' ');
+
+                /* Correct the position if the size of
+                 * the terminal was changed.
+                 */
+                while((gd->p1->y+2) > (gd->max_field_y-1)) {
+                    gd->p1->y--;
+                }
+
+                player_input = getch();
+                if ((player_input == KEY_UP) &&
+                        ((gd->p1->y-2) > 0)) {
+                    gd->p1->y--;
+                }
+                else if ((player_input == KEY_DOWN) &&
+                       ((gd->p1->y+2) < (gd->max_field_y-1))) {
+                    gd->p1->y++;
+                }
+
+                mvaddch(gd->p1->y-2, 0, '|');
+                mvaddch(gd->p1->y-1, 0, '|');
+                mvaddch(gd->p1->y, 0, '|');
+                mvaddch(gd->p1->y+1, 0, '|');
+                mvaddch(gd->p1->y+2, 0, '|');
 
                 p2_ai(gd);
                 p=0;
