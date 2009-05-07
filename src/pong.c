@@ -358,12 +358,12 @@ void p2_ai(struct game_data *gd) {
     }
 
     /* If that's too hard, add a if ((rand()%3)==1) or so at this point */
-    if ((gd->ball->y > gd->p2->y+2) &&
-           (gd->p2->y+2 < gd->max_field_y-1)) {
+    if ((gd->ball->y > gd->p2->y+3) &&
+           (gd->p2->y+3 < gd->max_field_y-1)) {
         gd->p2->y++;
     }
-    else if ((gd->ball->y < gd->p2->y-2) &&
-            (gd->p2->y-2 > 0)) {
+    else if ((gd->ball->y < gd->p2->y-3) &&
+            (gd->p2->y-3 > 0)) {
         gd->p2->y--;
     }
 
