@@ -296,6 +296,7 @@ void ball_launch(struct game_data *gd) {
     mvaddch(p->y, 0, ' ');
     mvaddch(p->y+1, 0, ' ');
     mvaddch(p->y+2, 0, ' ');
+
     p->y = gd->ball->y;
 
     /* Check if it's the turn of the player,
@@ -393,6 +394,8 @@ int game(void) {
 
     p=0;
     gd->ball->mv_right = TRUE;
+
+    timeout(0); /* set delay non blocking */
 
     mvaddch(gd->p1->y-2, 0, '|');
     mvaddch(gd->p1->y-1, 0, '|');
@@ -493,20 +496,14 @@ int main(void) {
     nonl(); /* Receive \r instead of \n */
     curs_set(0); /* Set Cursor invisible */
     cbreak(); /* No line buffering */
-    timeout(-1); /* set delay blocking */
     keypad(stdscr, TRUE); /* Activate keypad */
 
-    mvprintw(0, 0, "Press a key to start.");
-    refresh();
-    getch();
     clear();
-    timeout(0); /* set delay non blocking */
-
     winner = game();
     clear();
     getmaxyx(stdscr, y, x);
     mvprintw(y/2, x/3, "Player %d wins.", winner);
-    timeout(-1);
+    timeout(-1); /* Set delay to blocking */
     getch();
 
     return EXIT_SUCCESS;
