@@ -184,8 +184,8 @@ void ball_movement(struct game_data *gd) {
     /* Clear current position of the ball */
     mvaddch(gd->ball->y, gd->ball->x, ' ');
 
-    /* If the Terminal was resized, place ball to
-     * the center of the Terminal.
+    /* If the terminal was resized, place ball to
+     * the center of the terminal.
      */
     if (check_field_size(gd) == FALSE) {
         gd->ball->y = gd->max_field_y / 2;
@@ -361,7 +361,7 @@ void p2_ai(struct game_data *gd) {
 
     /* Correct the position if the size of the terminal was changed */
     gd->p2->x = gd->max_field_x;
-    while(gd->p2->y+2 > gd->max_field_y-1) {
+    while ((gd->p2->y+3) > (gd->max_field_y-1)) {
         gd->p2->y--;
     }
 
@@ -437,7 +437,7 @@ int game(void) {
             /* Correct the position if the size of
              * the terminal was changed.
              */
-            while((gd->p1->y+2) > (gd->max_field_y-1)) {
+            while((gd->p1->y+3) > (gd->max_field_y-1)) {
                 gd->p1->y--;
             }
 
