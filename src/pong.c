@@ -184,6 +184,14 @@ void ball_movement(struct game_data *gd) {
     /* Clear current position of the ball */
     mvaddch(gd->ball->y, gd->ball->x, ' ');
 
+    /* If the Terminal was resized, place ball to
+     * the center of the Terminal.
+     */
+    if (check_field_size(gd) == FALSE) {
+        gd->ball->y = gd->max_field_y / 2;
+        gd->ball->x = gd->max_field_x / 2;
+    }
+
     if (gd->ball->x == 1) {
         /* Does it hit p1s pad? */
         if ((gd->ball->y > gd->p1->y-3) &&
