@@ -337,11 +337,6 @@ void ball_launch(struct game_data *gd) {
     }
     else {
         p->y += rand()%3 - 1;
-        mvaddch(p->y-2, 0, '|');
-        mvaddch(p->y-1, 0, '|');
-        mvaddch(p->y, 0, '|');
-        mvaddch(p->y+1, 0, '|');
-        mvaddch(p->y+2, 0, '|');
     }
 }
 
@@ -510,7 +505,7 @@ int main(void) {
     winner = game();
     clear();
     getmaxyx(stdscr, y, x);
-    mvprintw(y/2, x/3, "Player %d wins.", winner);
+    mvprintw(y/2, (x/2)-7, "Player %d wins.", winner);
     timeout(-1); /* Set delay to blocking */
     getch();
 
