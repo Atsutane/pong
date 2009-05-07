@@ -30,7 +30,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include <ncurses.h>
+#include <unistd.h>
 
+#define GAME_LOOP_DIVISOR 12
 
 struct player_data {
     unsigned int x;
@@ -356,8 +358,6 @@ void p2_ai(struct game_data *gd) {
  * the ncurses handling in the main function.
  */
 int game(void) {
-    clock_t clocks, /* contains clock since the start of the program */
-            interval;
     int p, /* Time for player input y/n? */
         player_input,
         r; /* return value */
@@ -371,9 +371,6 @@ int game(void) {
     }
 
     p=0;
-    clocks = clock();
-    interval = CLOCKS_PER_SEC/12;
-    
     gd->ball->mv_right = TRUE;
 
     ball_movement(gd);
@@ -383,62 +380,61 @@ int game(void) {
 
     while ((gd->p1->score != 21) &&
             (gd->p2->score != 21)) {
-        if (clock() > clocks + interval) {
-            if (p == 4) {
 
-                /* Input Handling for P1 goes here.
-                 * I don't have the knowledge for
-                 * a well working one yet, but it
-                 * should be relatively easy.
-                 * man 3 ncurses
-                 * man 3 curs_getch
-                 * man 3 curs_inopts
-                */
-                mvaddch(gd->p1->y-2, 0, ' ');
-                mvaddch(gd->p1->y-1, 0, ' ');
-                mvaddch(gd->p1->y, 0, ' ');
-                mvaddch(gd->p1->y+1, 0, ' ');
-                mvaddch(gd->p1->y+2, 0, ' ');
+        if (p == 4) {
 
-                /* Correct the position if the size of
-                 * the terminal was changed.
-                 */
-                while((gd->p1->y+2) > (gd->max_field_y-1)) {
-                    gd->p1->y--;
-                }
+            /* Input Handling for P1 goes here.
+             * I don't have the knowledge for
+             * a well working one yet, but it
+             * should be relatively easy.
+             * man 3 ncurses
+             * man 3 curs_getch
+             * man 3 curs_inopts
+             */
+            mvaddch(gd->p1->y-2, 0, ' ');
+            mvaddch(gd->p1->y-1, 0, ' ');
+            mvaddch(gd->p1->y, 0, ' ');
+            mvaddch(gd->p1->y+1, 0, ' ');
+            mvaddch(gd->p1->y+2, 0, ' ');
 
-                player_input = getch();
-                if ((player_input == KEY_UP) &&
-                        ((gd->p1->y-2) > 0)) {
-                    gd->p1->y--;
-                }
-                else if ((player_input == KEY_DOWN) &&
-                       ((gd->p1->y+2) < (gd->max_field_y-1))) {
-                    gd->p1->y++;
-                }
-
-                mvaddch(gd->p1->y-2, 0, '|');
-                mvaddch(gd->p1->y-1, 0, '|');
-                mvaddch(gd->p1->y, 0, '|');
-                mvaddch(gd->p1->y+1, 0, '|');
-                mvaddch(gd->p1->y+2, 0, '|');
-
-                p2_ai(gd);
-                p=0;
+            /* Correct the position if the size of
+             * the terminal was changed.
+             */
+            while((gd->p1->y+2) > (gd->max_field_y-1)) {
+                gd->p1->y--;
             }
 
-            ball_movement(gd);
-            if ((gd->ball->mv_left == FALSE) &&
-                    (gd->ball->mv_right == FALSE)) {
-                    ball_launch(gd);
+            player_input = getch();
+            if ((player_input == KEY_UP) &&
+                    ((gd->p1->y-2) > 0)) {
+                gd->p1->y--;
             }
-            check_field_size(gd);
-            draw_statusbar(gd);
+            else if ((player_input == KEY_DOWN) &&
+                    ((gd->p1->y+2) < (gd->max_field_y-1))) {
+                gd->p1->y++;
+            }
 
-            p++;
-            clocks = clock();
-            refresh();
+            mvaddch(gd->p1->y-2, 0, '|');
+            mvaddch(gd->p1->y-1, 0, '|');
+            mvaddch(gd->p1->y, 0, '|');
+            mvaddch(gd->p1->y+1, 0, '|');
+            mvaddch(gd->p1->y+2, 0, '|');
+
+            p2_ai(gd);
+            p=0;
         }
+
+        ball_movement(gd);
+        if ((gd->ball->mv_left == FALSE) &&
+                (gd->ball->mv_right == FALSE)) {
+                ball_launch(gd);
+        }
+        check_field_size(gd);
+        draw_statusbar(gd);
+
+        p++;
+        refresh();
+        usleep(1000000 / GAME_LOOP_DIVISOR);
     }
 
     r = (gd->p1->score == 21) ? 1 : 2;
