@@ -186,19 +186,19 @@ void ball_movement(struct game_data *gd) {
 
     if (gd->ball->x == 1) {
         /* Does it hit p1s pad? */
-        if ((gd->ball->y > gd->p1->y-2) &&
-                (gd->ball->y < gd->p1->y+2)) {
+        if ((gd->ball->y > gd->p1->y-3) &&
+                (gd->ball->y < gd->p1->y+3)) {
             gd->ball->mv_left = FALSE;
             gd->ball->mv_right = TRUE;
             gd->ball->mv_up = FALSE;
             gd->ball->mv_down = FALSE;
 
-            if ((gd->ball->y > gd->p1->y-2) &&
+            if ((gd->ball->y > gd->p1->y-3) &&
                     (gd->ball->y < gd->p1->y)) {
                 gd->ball->mv_up = TRUE;
             }
             if ((gd->ball->y > gd->p1->y) &&
-                    (gd->ball->y < gd->p1->y+2)) {
+                    (gd->ball->y < gd->p1->y+3)) {
                 gd->ball->mv_down = TRUE;
             }
         }
@@ -206,19 +206,19 @@ void ball_movement(struct game_data *gd) {
 
     if (gd->ball->x == gd->max_field_x-1) {
         /* Does it hit p2s pad? */
-        if ((gd->ball->y > gd->p2->y-2) &&
-                (gd->ball->y < gd->p2->y+2)) {
+        if ((gd->ball->y > gd->p2->y-3) &&
+                (gd->ball->y < gd->p2->y+3)) {
             gd->ball->mv_left = TRUE;
             gd->ball->mv_right = FALSE;
             gd->ball->mv_up = FALSE;
             gd->ball->mv_down = FALSE;
 
-            if ((gd->ball->y > gd->p2->y-2) &&
+            if ((gd->ball->y > gd->p2->y-3) &&
                     (gd->ball->y < gd->p2->y)) {
                 gd->ball->mv_up = TRUE;
             }
             if ((gd->ball->y > gd->p2->y) &&
-                    (gd->ball->y < gd->p2->y+2)) {
+                    (gd->ball->y < gd->p2->y+3)) {
                 gd->ball->mv_down = TRUE;
             }
         }
@@ -291,6 +291,11 @@ void ball_launch(struct game_data *gd) {
 
     p = (gd->ball->x == 1) ? gd->p1 : gd->p2;
 
+    mvaddch(p->y-2, 0, ' ');
+    mvaddch(p->y-1, 0, ' ');
+    mvaddch(p->y, 0, ' ');
+    mvaddch(p->y+1, 0, ' ');
+    mvaddch(p->y+2, 0, ' ');
     p->y = gd->ball->y;
 
     /* Check if it's the turn of the player,
@@ -298,20 +303,36 @@ void ball_launch(struct game_data *gd) {
      */
     if (p->x == 0) {
         while ((c = getch()) != ' ') {
+            mvaddch(p->y-2, 0, ' ');
+            mvaddch(p->y-1, 0, ' ');
+            mvaddch(p->y, 0, ' ');
+            mvaddch(p->y+1, 0, ' ');
+            mvaddch(p->y+2, 0, ' ');
+
             if ((c == KEY_UP) &&
-                  (p->y > gd->ball->y-2) &&
-                  (p->y < gd->ball->y+2)) {
+                  (p->y > gd->ball->y-3) &&
+                  (p->y < gd->ball->y+3)) {
                 p->y--;
             }
             else if ((c == KEY_DOWN) &&
-                  (p->y > gd->ball->y-2) &&
-                  (p->y < gd->ball->y+2)) {
+                  (p->y > gd->ball->y-3) &&
+                  (p->y < gd->ball->y+3)) {
                 p->y++;
             }
+            mvaddch(p->y-2, 0, '|');
+            mvaddch(p->y-1, 0, '|');
+            mvaddch(p->y, 0, '|');
+            mvaddch(p->y+1, 0, '|');
+            mvaddch(p->y+2, 0, '|');
         }
     }
     else {
         p->y += rand()%3 - 1;
+        mvaddch(p->y-2, 0, '|');
+        mvaddch(p->y-1, 0, '|');
+        mvaddch(p->y, 0, '|');
+        mvaddch(p->y+1, 0, '|');
+        mvaddch(p->y+2, 0, '|');
     }
 }
 
@@ -373,6 +394,11 @@ int game(void) {
     p=0;
     gd->ball->mv_right = TRUE;
 
+    mvaddch(gd->p1->y-2, 0, '|');
+    mvaddch(gd->p1->y-1, 0, '|');
+    mvaddch(gd->p1->y, 0, '|');
+    mvaddch(gd->p1->y+1, 0, '|');
+    mvaddch(gd->p1->y+2, 0, '|');
     ball_movement(gd);
     p2_ai(gd);
 
