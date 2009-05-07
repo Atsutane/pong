@@ -31,6 +31,7 @@
 #include <time.h>
 #include <ncurses.h>
 #include <unistd.h>
+#include <time.h>
 
 #define GAME_LOOP_DIVISOR 12
 
@@ -53,6 +54,7 @@ struct ball_data {
 struct game_data {
     unsigned int max_field_x; /* field size x */
     unsigned int max_field_y; /* field size y */
+    time_t time_played;
     struct player_data *p1; /* Player 1 */
     struct player_data *p2; /* Player 2 */
     struct ball_data *ball; /* Ball */
@@ -77,6 +79,10 @@ void draw_statusbar(struct game_data *gd) {
 
     mvprintw(gd->max_field_y, 0,
             "%02d", gd->p1->score);
+    mvprintw(gd->max_field_y,
+            (gd->max_field_x/2)-10,
+            "%04d seconds played",
+            time(NULL) - gd->time_played);
     mvprintw(gd->max_field_y,
             gd->max_field_x-1,
             "%02d", gd->p2->score);
@@ -153,6 +159,8 @@ struct game_data *init_game_data(void) {
 
     /* Fill items with the default data */
     check_field_size(gd);
+
+    time(&gd->time_played);
 
     gd->p1->x = 0;
     gd->p1->y = gd->max_field_y / 2;
@@ -500,6 +508,8 @@ int main(void) {
     curs_set(0); /* Set Cursor invisible */
     cbreak(); /* No line buffering */
     keypad(stdscr, TRUE); /* Activate keypad */
+
+    srand(time(NULL)); /* Set random seed */
 
     clear();
     winner = game();
