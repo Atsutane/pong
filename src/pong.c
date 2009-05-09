@@ -32,6 +32,7 @@
 #include <ncurses.h>
 #include <unistd.h>
 #include <time.h>
+#include <stdbool.h>
 
 #define GAME_LOOP_DIVISOR 12
 
@@ -62,7 +63,7 @@ struct game_data {
 
 
 /* Clears the last line of the terminal */
-inline void clear_statusbar(unsigned int y,
+static void clear_statusbar(unsigned int y,
         unsigned int x) {
     unsigned int i;
 
@@ -120,7 +121,7 @@ bool check_field_size(struct game_data *gd) {
         return FALSE;
     }
 
-    return TRUE;
+    return true;
 }
 
 
@@ -170,7 +171,7 @@ struct game_data *init_game_data(void) {
     gd->p2->x = gd->max_field_x;
     gd->p2->y = gd->max_field_y / 2;
     gd->p2->score = 0;
-    gd->p2->ai = TRUE;
+    gd->p2->ai = true;
 
     gd->ball->x = gd->max_field_x / 2;
     gd->ball->y = (gd->max_field_y-1) / 2; /* w/o statusbar */
@@ -195,7 +196,7 @@ void ball_movement(struct game_data *gd) {
     /* If the terminal was resized, place ball to
      * the center of the terminal.
      */
-    if (check_field_size(gd) == FALSE) {
+    if (!check_field_size(gd)) {
         gd->ball->y = gd->max_field_y / 2;
         gd->ball->x = gd->max_field_x / 2;
     }
@@ -205,17 +206,17 @@ void ball_movement(struct game_data *gd) {
         if ((gd->ball->y > gd->p1->y-3) &&
                 (gd->ball->y < gd->p1->y+3)) {
             gd->ball->mv_left = FALSE;
-            gd->ball->mv_right = TRUE;
+            gd->ball->mv_right = true;
             gd->ball->mv_up = FALSE;
             gd->ball->mv_down = FALSE;
 
             if ((gd->ball->y > gd->p1->y-3) &&
                     (gd->ball->y < gd->p1->y)) {
-                gd->ball->mv_up = TRUE;
+                gd->ball->mv_up = true;
             }
             if ((gd->ball->y > gd->p1->y) &&
                     (gd->ball->y < gd->p1->y+3)) {
-                gd->ball->mv_down = TRUE;
+                gd->ball->mv_down = true;
             }
         }
     }
@@ -224,18 +225,18 @@ void ball_movement(struct game_data *gd) {
         /* Does it hit p2s pad? */
         if ((gd->ball->y > gd->p2->y-3) &&
                 (gd->ball->y < gd->p2->y+3)) {
-            gd->ball->mv_left = TRUE;
+            gd->ball->mv_left = true;
             gd->ball->mv_right = FALSE;
             gd->ball->mv_up = FALSE;
             gd->ball->mv_down = FALSE;
 
             if ((gd->ball->y > gd->p2->y-3) &&
                     (gd->ball->y < gd->p2->y)) {
-                gd->ball->mv_up = TRUE;
+                gd->ball->mv_up = true;
             }
             if ((gd->ball->y > gd->p2->y) &&
                     (gd->ball->y < gd->p2->y+3)) {
-                gd->ball->mv_down = TRUE;
+                gd->ball->mv_down = true;
             }
         }
     }
@@ -243,12 +244,12 @@ void ball_movement(struct game_data *gd) {
     /* Check if it hits the top of the terminal */
     if (gd->ball->y == 0) {
         gd->ball->mv_up = FALSE;
-        gd->ball->mv_down = TRUE;
+        gd->ball->mv_down = true;
     }
     /* Check if it hits the statusbar */
     else if (gd->ball->y == gd->max_field_y-1) {
         gd->ball->mv_down = FALSE;
-        gd->ball->mv_up = TRUE;
+        gd->ball->mv_up = true;
     }
 
 
@@ -280,16 +281,16 @@ void ball_movement(struct game_data *gd) {
     }
 
     /* Movement of the ball */
-    if (gd->ball->mv_left == TRUE) {
+    if (gd->ball->mv_left == true) {
         gd->ball->x--;
     }
-    else if (gd->ball->mv_right == TRUE) {
+    else if (gd->ball->mv_right == true) {
         gd->ball->x++;
     }
-    if (gd->ball->mv_up == TRUE) {
+    if (gd->ball->mv_up == true) {
         gd->ball->y--;
     }
-    else if (gd->ball->mv_down == TRUE) {
+    else if (gd->ball->mv_down == true) {
         gd->ball->y++;
     }
     mvaddch(gd->ball->y, gd->ball->x, '0');
@@ -404,7 +405,7 @@ int game(void) {
     }
 
     p=0;
-    gd->ball->mv_right = TRUE;
+    gd->ball->mv_right = true;
 
     timeout(0); /* set delay non blocking */
 
@@ -507,7 +508,7 @@ int main(void) {
     nonl(); /* Receive \r instead of \n */
     curs_set(0); /* Set Cursor invisible */
     cbreak(); /* No line buffering */
-    keypad(stdscr, TRUE); /* Activate keypad */
+    keypad(stdscr, true); /* Activate keypad */
 
     srand(time(NULL)); /* Set random seed */
 
