@@ -97,7 +97,7 @@ void draw_statusbar(struct game_data *gd) {
 bool check_field_size(struct game_data *gd) {
     unsigned int y, x; /* temporary data */
     if (gd == NULL) {
-        return FALSE;
+        return false;
     }
 
     /* Get current size of the terminal */
@@ -106,7 +106,7 @@ bool check_field_size(struct game_data *gd) {
     x--;
     y--;
 
-    /* If size changed, update the data and return FALSE so
+    /* If size changed, update the data and return false so
      * it's easy to check if the data changed.
      */
     if ((gd->max_field_y != y) ||
@@ -118,7 +118,7 @@ bool check_field_size(struct game_data *gd) {
         gd->max_field_x = x;
         gd->max_field_y = y;
 
-        return FALSE;
+        return false;
     }
 
     return true;
@@ -166,7 +166,7 @@ struct game_data *init_game_data(void) {
     gd->p1->x = 0;
     gd->p1->y = gd->max_field_y / 2;
     gd->p1->score = 0;
-    gd->p1->ai = FALSE;
+    gd->p1->ai = false;
 
     gd->p2->x = gd->max_field_x;
     gd->p2->y = gd->max_field_y / 2;
@@ -175,10 +175,10 @@ struct game_data *init_game_data(void) {
 
     gd->ball->x = gd->max_field_x / 2;
     gd->ball->y = (gd->max_field_y-1) / 2; /* w/o statusbar */
-    gd->ball->mv_left = FALSE;
-    gd->ball->mv_right = FALSE;
-    gd->ball->mv_up = FALSE;
-    gd->ball->mv_down = FALSE;
+    gd->ball->mv_left = false;
+    gd->ball->mv_right = false;
+    gd->ball->mv_up = false;
+    gd->ball->mv_down = false;
 
     return gd;
 }
@@ -205,10 +205,10 @@ void ball_movement(struct game_data *gd) {
         /* Does it hit p1s pad? */
         if ((gd->ball->y > gd->p1->y-3) &&
                 (gd->ball->y < gd->p1->y+3)) {
-            gd->ball->mv_left = FALSE;
+            gd->ball->mv_left = false;
             gd->ball->mv_right = true;
-            gd->ball->mv_up = FALSE;
-            gd->ball->mv_down = FALSE;
+            gd->ball->mv_up = false;
+            gd->ball->mv_down = false;
 
             if ((gd->ball->y > gd->p1->y-3) &&
                     (gd->ball->y < gd->p1->y)) {
@@ -226,9 +226,9 @@ void ball_movement(struct game_data *gd) {
         if ((gd->ball->y > gd->p2->y-3) &&
                 (gd->ball->y < gd->p2->y+3)) {
             gd->ball->mv_left = true;
-            gd->ball->mv_right = FALSE;
-            gd->ball->mv_up = FALSE;
-            gd->ball->mv_down = FALSE;
+            gd->ball->mv_right = false;
+            gd->ball->mv_up = false;
+            gd->ball->mv_down = false;
 
             if ((gd->ball->y > gd->p2->y-3) &&
                     (gd->ball->y < gd->p2->y)) {
@@ -243,12 +243,12 @@ void ball_movement(struct game_data *gd) {
 
     /* Check if it hits the top of the terminal */
     if (gd->ball->y == 0) {
-        gd->ball->mv_up = FALSE;
+        gd->ball->mv_up = false;
         gd->ball->mv_down = true;
     }
     /* Check if it hits the statusbar */
     else if (gd->ball->y == gd->max_field_y-1) {
-        gd->ball->mv_down = FALSE;
+        gd->ball->mv_down = false;
         gd->ball->mv_up = true;
     }
 
@@ -261,10 +261,10 @@ void ball_movement(struct game_data *gd) {
 
         gd->ball->x = 1;
         gd->ball->y = (gd->max_field_y-1) / 2;
-        gd->ball->mv_left = FALSE;
-        gd->ball->mv_right = FALSE;
-        gd->ball->mv_up = FALSE;
-        gd->ball->mv_down = FALSE;
+        gd->ball->mv_left = false;
+        gd->ball->mv_right = false;
+        gd->ball->mv_up = false;
+        gd->ball->mv_down = false;
     }
     /* Check if p1 scores and if, reset the location to the front of
      * p2s pad, launching the ball will be handled elsewhere.
@@ -274,10 +274,10 @@ void ball_movement(struct game_data *gd) {
 
         gd->ball->x = gd->max_field_x-1;
         gd->ball->y = (gd->max_field_y-1) / 2;
-        gd->ball->mv_left = FALSE;
-        gd->ball->mv_right = FALSE;
-        gd->ball->mv_up = FALSE;
-        gd->ball->mv_down = FALSE;
+        gd->ball->mv_left = false;
+        gd->ball->mv_right = false;
+        gd->ball->mv_up = false;
+        gd->ball->mv_down = false;
     }
 
     /* Movement of the ball */
@@ -466,8 +466,8 @@ int game(void) {
         }
 
         ball_movement(gd);
-        if ((gd->ball->mv_left == FALSE) &&
-                (gd->ball->mv_right == FALSE)) {
+        if ((gd->ball->mv_left == false) &&
+                (gd->ball->mv_right == false)) {
                 ball_launch(gd);
         }
         check_field_size(gd);
