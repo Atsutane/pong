@@ -375,7 +375,7 @@ void p2_ai(struct game_data *gd) {
         gd->p2->y++;
     }
     else if ((gd->ball->y < gd->p2->y-3) &&
-            (gd->p2->y-3 > 0)) {
+            (gd->p2->y != 3)) {
         gd->p2->y--;
     }
 
@@ -447,7 +447,7 @@ int game(void) {
 
             player_input = getch();
             if ((player_input == KEY_UP) &&
-                    ((gd->p1->y-2) > 0)) {
+                    (gd->p1->y != 2)) {
                 gd->p1->y--;
             }
             else if ((player_input == KEY_DOWN) &&
